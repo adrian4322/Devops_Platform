@@ -1,0 +1,16 @@
+package com.devops.Repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import com.devops.Entity.Node;
+import java.util.List;
+
+@Repository
+public interface NodeRepository extends JpaRepository<Node, Long> {
+    
+    Node findByName(String name);
+    Node findNodeByPodName(String name);
+    List<Node> findNodesByClusterName(String name);
+    List<Node> findNodesByClusterId(Long Id);
+
+}
