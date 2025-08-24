@@ -5,10 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.devops.Repository.ClusterRepository;
 import com.devops.Entity.Cluster;
+import com.devops.Entity.Node;
 import com.devops.Dto.ClusterDto;
 import com.k8s.KubernetesClientFactory;
-import com.devops.Entity.Node;
-import com.devops.Entity.Pod;
+
 import io.fabric8.kubernetes.client.KubernetesClient;
 
 import java.util.List;
@@ -21,6 +21,9 @@ public class ClusterService {
     
     @Autowired
     private ClusterRepository clusterRepository;
+
+    @Autowired
+    private NodeService nodeService;
 
     @Autowired
     private KubernetesClientFactory clientFactory;
@@ -75,10 +78,10 @@ public class ClusterService {
         try {
             KubernetesClient client = clientFactory.buildClient(cluster.getEndpoint(), cluster.getToken());
 
-          //  List<Node> nodeList = nodeService.syncNodesFromCluster(client);
+             List<Node> nodeList = nodeService.syncNodesFromCluster(client);
           //  List<Pod> podList = podService.syncPodsFromCluster(client);
 
-          //  cluster.setNodeList(nodeList);
+             cluster.setNodesList(nodeList);
           //  cluster.setPodsList(podsList);
 
             clusterRepository.save(cluster);
