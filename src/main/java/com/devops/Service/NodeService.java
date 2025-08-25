@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.devops.Entity.Node;
 import com.devops.Entity.Cluster;
 import com.devops.Repository.NodeRepository;
-import com.k8s.KubernetesClientFactory;
 
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.api.model.NodeList;
@@ -22,9 +21,6 @@ public class NodeService {
 
         @Autowired
         private NodeRepository nodeRepository;
-
-        @Autowired
-        private KubernetesClientFactory clientFactory;
 
         public List<Node> getAllNodes(){
             return nodeRepository.findAll();
@@ -64,8 +60,13 @@ public class NodeService {
             for(io.fabric8.kubernetes.api.model.Node fabricNode : nodeList.getItems()){
                 Node node = new Node();
                 node.setName(fabricNode.getMetadata().getName());
-                node.setStatus(fabricNode.getStatus().getPhase());
-                //node.setPods();
+                String nodeStatus = fabricNode.getStatus().getConditions().stream()
+                                        .filter(c -> "Ready".equals(c.getType()))
+                                        .map(c -> c.getStatus())
+                                        .findFirst()
+                                        .orElse("Unknown");
+                                    node.setStatus(nodeStatus);
+                node.setPodsList(new ArrayList<>());
                 nodes.add(node);
             }
             
@@ -80,5 +81,6 @@ public class NodeService {
         public List<Node> getNodeByClusterName(Cluster cluster) {
             return nodeRepository.findNodesByClusterName(cluster.getName());
         }
+        
     
 }

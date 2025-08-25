@@ -24,26 +24,27 @@ public class ClusterController {
             List<ClusterDto> clusters = clusterService.getAllClustersDto();
             return ResponseEntity.ok(clusters);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
-    @GetMapping("/{Id}")
-    public ResponseEntity<ClusterDto> getClusterById(@PathVariable Long Id) {
+    @GetMapping("/Id/{Id}")
+    public ResponseEntity<ClusterDto> getClusterById(@PathVariable("Id") Long Id) {
             return clusterService.getClusterDtoById(Id)
                     .map(ResponseEntity::ok)
-                    .orElseGet(() -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+                    .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity<ClusterDto> getClusterByName(@PathVariable String name) {
-        try {
-            ClusterDto clusterDto = clusterService.getClusterDtoByName(name);
-            return ResponseEntity.ok(clusterDto);
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    public ResponseEntity<ClusterDto> getClusterByName(@PathVariable("name") String name) {
+        
+    ClusterDto clusterDto = clusterService.getClusterDtoByName(name);
+    if (clusterDto != null) {
+        return ResponseEntity.ok(clusterDto);
+    } else {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
-}
+    }
 
 
 }

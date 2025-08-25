@@ -7,7 +7,7 @@ import java.util.List;
 @Entity
 @Table(name = "nodes")
 public class Node {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -15,7 +15,7 @@ public class Node {
     @NotBlank(message = "numele nu poate sa fie gol")
     private String name;
 
-    @NotBlank()
+    @NotBlank
     private String status;
 
     @ManyToOne
@@ -27,44 +27,19 @@ public class Node {
 
     public Node() {}
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public String getName() {
-        return name;
-    }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public Cluster getCluster() { return cluster; }
+    public void setCluster(Cluster cluster) { this.cluster = cluster; }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Cluster getCluster() {
-        return cluster;
-    }
-
-    public void setCluster(Cluster cluster) {
-        this.cluster = cluster;
-    }
-
-    public List<Pod> getPodsList() {
-        return podsList;
-    }
-
-    public void setPodsList(List<Pod> podsList) {
-        this.podsList = podsList;
-    }
+    public List<Pod> getPodsList() { return podsList; }
+    public void setPodsList(List<Pod> podsList) { this.podsList = podsList; }
 
 }

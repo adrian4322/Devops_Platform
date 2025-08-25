@@ -3,9 +3,11 @@ package com.devops.Service;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.devops.Repository.ClusterRepository;
 import com.devops.Entity.Cluster;
 import com.devops.Entity.Node;
+import com.devops.Entity.Pod;
+import com.devops.Service.PodService;
+import com.devops.Repository.ClusterRepository;
 import com.devops.Dto.ClusterDto;
 import com.k8s.KubernetesClientFactory;
 
@@ -24,6 +26,9 @@ public class ClusterService {
 
     @Autowired
     private NodeService nodeService;
+
+    @Autowired
+    private PodService podService;
 
     @Autowired
     private KubernetesClientFactory clientFactory;
@@ -79,10 +84,10 @@ public class ClusterService {
             KubernetesClient client = clientFactory.buildClient(cluster.getEndpoint(), cluster.getToken());
 
              List<Node> nodeList = nodeService.syncNodesFromCluster(client);
-          //  List<Pod> podList = podService.syncPodsFromCluster(client);
+             List<Pod> podList = podService.syncPodsFromCluster(client, nodeList);
 
              cluster.setNodesList(nodeList);
-          //  cluster.setPodsList(podsList);
+             cluster.setPodsList(podList);
 
             clusterRepository.save(cluster);
         } catch (Exception e) {

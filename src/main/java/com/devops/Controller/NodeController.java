@@ -30,7 +30,7 @@ public class NodeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<NodeDto> getNodeById(@PathVariable Long id){
+    public ResponseEntity<NodeDto> getNodeById(@PathVariable("id") Long id){
         try {
             Node node = nodeService.getNodeById(id);      
             NodeDto dto = nodeService.convertToDto(node); 
@@ -41,7 +41,7 @@ public class NodeController {
     }
 
     @GetMapping("/{name}")
-    public ResponseEntity<NodeDto> getNodeByName(@PathVariable String name){
+    public ResponseEntity<NodeDto> getNodeByName(@PathVariable("name") String name){
         try {
             Node node = nodeService.getNodeByName(name);      
             NodeDto dto = nodeService.convertToDto(node); 

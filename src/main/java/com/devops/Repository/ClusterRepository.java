@@ -9,6 +9,6 @@ import java.util.List;
 public interface ClusterRepository extends JpaRepository<Cluster, Long> {
     
     Cluster findByName(String name);
-    List<Cluster> findAll();
     List<Cluster> findByStatus(String status);
+    
 }

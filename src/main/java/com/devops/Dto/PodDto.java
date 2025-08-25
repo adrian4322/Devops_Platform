@@ -1,17 +1,8 @@
-package com.devops.Entity;
+package com.devops.Dto;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+public class PodDto {
 
-@Entity
-@Table(name = "pods")
-public class Pod {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotBlank
     private String name;
     private String namespace;
     private String phase;
@@ -21,15 +12,6 @@ public class Pod {
     private String nodeName;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cluster_id")
-    private Cluster cluster;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "node_id")
-    private Node node;
-
-    public Pod() {}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -51,12 +33,6 @@ public class Pod {
 
     public Integer getRestartCount() { return RestartCount; }
     public void setRestartCount(Integer restartCount) { RestartCount = restartCount; }
-
-    public Cluster getCluster() { return cluster; }
-    public void setCluster(Cluster cluster) { this.cluster = cluster; }
-
-    public Node getNode() { return node; }
-    public void setNode(Node node) { this.node = node; }
 
     public String getNodeName() {return nodeName;}
     public void setNodeName(String nodeName) {this.nodeName = nodeName;}

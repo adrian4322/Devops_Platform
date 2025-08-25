@@ -29,45 +29,25 @@ public class Cluster {
 
     public Cluster() {}
 
-    public Long getId() {return id;}
-    public void setId(Long id) { this.id = id;}
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
     public String getName() { return name; }
-    public void setName(String name) {this.name = name;}
+    public void setName(String name) { this.name = name; }
 
-    public String getStatus() {return status;}
-    public void setStatus(String status) {this.status = status;}
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
-    public String getEndpoint() {
-        return endpoint;
-    }
+    public String getEndpoint() { return endpoint; }
+    public void setEndpoint(String endpoint) { this.endpoint = endpoint; }
 
-    public void setEndpoint(String endpoint) {
-        this.endpoint = endpoint;
-    }
+    public String getToken() { return token; }
+    public void setToken(String token) { this.token = token; }
 
-    public String getToken() {
-        return token;
-    }
+    public List<Node> getNodesList() { return nodesList; }
+    public void setNodesList(List<Node> nodesList) { this.nodesList = nodesList; }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public List<Node> getNodesList() {
-        return nodesList;
-    }
-
-    public void setNodesList(List<Node> nodesList) {
-        this.nodesList = nodesList;
-    }
-
-    public List<Pod> getPodsList() {
-        return podsList;
-    }
-
-    public void setPodsList(List<Pod> podsList) {
-        this.podsList = podsList;
-    }
+    public List<Pod> getPodsList() { return podsList; }
+    public void setPodsList(List<Pod> podsList) { this.podsList = podsList; }
 
 }
