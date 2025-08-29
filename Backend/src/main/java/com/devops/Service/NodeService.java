@@ -1,56 +1,49 @@
 package com.devops.Service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.devops.Entity.Node;
-import com.devops.Entity.Cluster;
-import com.devops.Repository.NodeRepository;
 
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.api.model.NodeList;
 
-
+import com.devops.Entity.Node;
+import com.devops.Entity.Cluster;
 import com.devops.Dto.NodeDto;
+import com.devops.Repository.NodeRepository;
+import com.devops.Mapper.NodeMapper;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 public class NodeService {
 
-        @Autowired
-        private NodeRepository nodeRepository;
+        private final NodeRepository nodeRepository;
+
+        public NodeService(NodeRepository nodeRepository){
+            this.nodeRepository = nodeRepository;
+        }
 
         public List<Node> getAllNodes(){
             return nodeRepository.findAll();
         }
 
-        public Node getNodeByName(String name){
+        public NodeDto getNodeDtoByName(String name){
             return nodeRepository.findByName(name)
-                        .orElseThrow(() -> new RuntimeException("Node-ul nu a fost gasit dupa nume:" + name));
+                    .map(NodeMapper::convertNodeToDto)
+                    .orElseThrow(() -> new RuntimeException("Node-ul nu a fost gasit dupa nume:" + name));
         }
 
-        public Node getNodeById(Long id) {
+        public Optional<NodeDto> getNodeDtoById(Long id) {
             return nodeRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Node-ul nu a fost gasit dupa id:" + id));
-        }
-
-        public NodeDto convertToDto(Node node){
-                NodeDto dto = new NodeDto();
-                dto.setId(node.getId());
-                dto.setName(node.getName());
-                dto.setStatus(node.getStatus());
-                dto.setPodsList(node.getPodsList());
-                return dto;
+                    .map(NodeMapper::convertNodeToDto);
         }
 
         public List<NodeDto> getAllNodesDto() {
-            List<NodeDto> nodesDto = new ArrayList<>();
-            for(Node node : getAllNodes()){
-                nodesDto.add(convertToDto(node));
-            }
-            return nodesDto;
+            return getAllNodes()
+                    .stream()
+                    .map(NodeMapper::convertNodeToDto)
+                    .toList();
         }
 
         public List<Node> syncNodesFromCluster(KubernetesClient client, Cluster cluster){

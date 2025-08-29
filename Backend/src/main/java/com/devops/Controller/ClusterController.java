@@ -1,60 +1,58 @@
 package com.devops.Controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import jakarta.validation.Valid;
 
 import com.devops.Service.ClusterService;
-import com.devops.Dto.ClusterDto;
+import com.devops.Dto.ClusterCreateRequest;
+import com.devops.Dto.ClusterResponseDto;
 
 import java.util.List;
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/clusters")
 @CrossOrigin(origins = "*")
 public class ClusterController {
     
-    @Autowired
-    private ClusterService clusterService;
+    private final ClusterService clusterService;
+
+    public ClusterController(ClusterService clusterService){
+            this.clusterService=clusterService;
+    }
 
     @GetMapping
-    public ResponseEntity<List<ClusterDto>> getAllClusterDto(){
-        try {
-            List<ClusterDto> clusters = clusterService.getAllClustersDto();
-            return ResponseEntity.ok(clusters);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public ResponseEntity<List<ClusterResponseDto>> getAllClusterDto(){
+        List<ClusterResponseDto> clusters = clusterService.getAllClustersResponseDto();
+        return ResponseEntity.ok(clusters);
     }
 
     @GetMapping("/Id/{Id}")
-    public ResponseEntity<ClusterDto> getClusterById(@PathVariable("Id") Long Id) {
-            return clusterService.getClusterDtoById(Id)
-                    .map(ResponseEntity::ok)
-                    .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    public ResponseEntity<ClusterResponseDto> getClusterById(@PathVariable("Id") Long Id) {
+        return clusterService.getClusterDtoById(Id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity<ClusterDto> getClusterByName(@PathVariable("name") String name) {
-        ClusterDto clusterDto = clusterService.getClusterDtoByName(name);
-        if (clusterDto != null) {
-            return ResponseEntity.ok(clusterDto);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public ResponseEntity<ClusterResponseDto> getClusterByName(@PathVariable("name") String name) {
+        return clusterService.getClusterDtoByName(name)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<String> createCluster(@RequestBody ClusterDto clusterDto){
-        try {
-            clusterService.createCluster(clusterDto);
-            return ResponseEntity.ok("Clusterul a fost creat cu succes");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+ 
+    @PostMapping
+    public ResponseEntity<ClusterResponseDto> createCluster(@Valid @RequestBody ClusterCreateRequest request){
+        ClusterResponseDto body = clusterService.createCluster(request);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                        .path("/Id/{id}")
+                        .buildAndExpand(body.getId())
+                        .toUri();
+        return ResponseEntity.created(location).body(body);
     }
-
-
 
 }

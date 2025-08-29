@@ -1,12 +1,10 @@
 package com.devops.Controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
 import com.devops.Service.NodeService;
-import com.devops.Entity.Node;
 import com.devops.Dto.NodeDto;
 
 import java.util.List;
@@ -15,40 +13,36 @@ import java.util.List;
 @RequestMapping("api/nodes")
 @CrossOrigin(origins = "*")
 public class NodeController {
-    
-    @Autowired
+
     private NodeService nodeService;
+    
+   public NodeController(NodeService nodeService){
+         this.nodeService = nodeService;
+   }
 
     @GetMapping
     public ResponseEntity<List<NodeDto>> getAllNodesDto(){
-        try {
-            List<NodeDto> nodes = nodeService.getAllNodesDto();
-            return ResponseEntity.ok(nodes);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        List<NodeDto> nodes = nodeService.getAllNodesDto();
+        return ResponseEntity.ok(nodes);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<NodeDto> getNodeById(@PathVariable("id") Long id){
-        try {
-            Node node = nodeService.getNodeById(id);      
-            NodeDto dto = nodeService.convertToDto(node); 
-            return ResponseEntity.ok(dto);
-        } catch(Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return nodeService.getNodeDtoById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+
     }
 
     @GetMapping("/name/{name}")
     public ResponseEntity<NodeDto> getNodeByName(@PathVariable("name") String name){
         try {
-            Node node = nodeService.getNodeByName(name);      
-            NodeDto dto = nodeService.convertToDto(node); 
+            NodeDto dto = nodeService.getNodeDtoByName(name); 
             return ResponseEntity.ok(dto);
         } catch(Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+
     }
 
 }

@@ -1,16 +1,15 @@
 package com.devops.Service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.devops.Entity.Pod;
 import com.devops.Entity.Node;
+import com.devops.Dto.PodDto;
+import com.devops.Mapper.PodMapper;
 import com.devops.Repository.PodRepository;
 
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.api.model.PodList;
-
-import com.devops.Dto.PodDto;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -18,12 +17,27 @@ import java.util.ArrayList;
 @Service
 public class PodService {
 
-    @Autowired
-    private PodRepository podRepository;
-    
-    public List<Pod> getAllPods(){
-        return podRepository.findAll();
+    private final PodRepository podRepository;
+
+    public PodService(PodRepository podRepository){
+        this.podRepository=podRepository;
     }
+    
+    public List<PodDto> getAllPodsDto(){
+        return podRepository.findAll()
+                .stream()
+                .map(PodMapper::convertToDto)
+                .toList();
+    }
+
+    public List<PodDto> getAllPodsInNamespace(String namespace) {
+    List<Pod> podsInNamespace = podRepository.findByNamespace(namespace);
+
+    return podsInNamespace.stream()
+            .map(PodMapper::convertToDto)
+            .toList();
+}
+
 
     public Pod getPodByName(String name){
         return podRepository.findPodByName(name);
@@ -31,19 +45,6 @@ public class PodService {
 
     public Pod getPodById(Long Id){
         return podRepository.findPodById(Id);
-    }
-
-    public PodDto convertToDto(Pod pod) {
-        PodDto dto = new PodDto();
-        dto.setId(pod.getId());
-        dto.setName(pod.getName());
-        dto.setNamespace(pod.getNamespace());
-        dto.setPhase(pod.getPhase());
-        dto.setPodIP(pod.getPodIP());
-        dto.setHostIP(pod.getHostIP());
-        dto.setRestartCount(pod.getRestartCount());
-        dto.setNodeName(pod.getNodeName());
-        return dto;
     }
 
     public List<Pod> syncPodsFromCluster(KubernetesClient client, List<Node> nodes){

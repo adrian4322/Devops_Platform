@@ -1,11 +1,9 @@
 package com.devops.Dto;
 
-public class ClusterDto {
-
+public class ClusterResponseDto {
     private Long id;
     private String name;
     private String endpoint;
-    private String token;
     private String status;
 
     public Long getId() { return id; }
@@ -17,10 +15,6 @@ public class ClusterDto {
     public String getEndpoint() { return endpoint; }
     public void setEndpoint(String endpoint) { this.endpoint = endpoint; }
 
-    public String getToken() { return token; }
-    public void setToken(String token) { this.token = token; }
-
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
-
 }

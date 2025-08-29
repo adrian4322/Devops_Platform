@@ -14,6 +14,8 @@ public interface PodRepository extends JpaRepository<Pod, Long> {
     Pod findPodById(Long Id);
     Pod findPodByName(String name);
     List<Pod> findPodsByPhase(String Phase);
+    List<Pod> findByNamespace(String namespace);
     List<Pod> findPodsByNodeName(Node node);
+    
     
 }
