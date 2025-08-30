@@ -12,7 +12,7 @@ public class ClusterMapper {
 
         Cluster cluster = new Cluster();
         cluster.setName(request.getName());
-        cluster.setEndpoint(request.getName());
+        cluster.setEndpoint(request.getEndpoint());
         cluster.setToken(request.getToken());
         cluster.setStatus(request.getStatus());
         return cluster;
